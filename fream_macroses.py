@@ -42,11 +42,9 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 				ajax = '.ajax()'
 
 			if res.group(2).startswith('http'):
-				result = res.group(1) + "page = self" + ajax
-				+ ".http.get('" + res.group(2) + "')"
+				result = res.group(1) + "page = self.http" + ajax + ".post('" + res.group(2) + "', data)"
 			else:
-				result = res.group(1) + "page = self" + ajax
-				+ ".http.get(" + res.group(2) + ")"
+				result = res.group(1) + "page = self.http" + ajax + ".post(" + res.group(2) + ", data)"
 
 			return result
 
