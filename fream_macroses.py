@@ -129,3 +129,10 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 			else:
 				result = "{0}self.hlp.slp({1}, log=self.log)".format(*list(res.groups()))
 			return result
+
+		elif re.match(r'^\s*data\s+\S+$', text):
+			res = re.search(r'^\s*data\s+(\S+)$', text)
+			if not res:
+				return
+			result = "self.data['" + res.group(1) + "']"
+			return result
