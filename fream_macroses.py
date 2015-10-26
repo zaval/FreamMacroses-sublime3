@@ -108,7 +108,7 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 			if not res:
 				return
 
-			result = "{0}{1} = self.cnf.get{2}('{1}')".format(*list(res.groups()))
+			result = "{0}self.cnf.get{2}('{1}')".format(*list(res.groups()))
 			return result
 
 		elif re.match(r'^\s*cnt\s+\S+', text):
