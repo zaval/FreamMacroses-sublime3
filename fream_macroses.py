@@ -14,9 +14,22 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 		replace = self.process_request(macro)
 
 		if replace:
+			if isinstance(replace, tuple):
+				text, cursor = replace
+			else:
+				text = replace
+				cursor = 0
 
 			self.view.erase(edit, sel[0])
-			self.view.insert(edit, sel[0].a, replace)
+			self.view.insert(edit, sel[0].a, text)
+			end_cursor = self.view.sel()[0].b
+			if cursor > 0:
+				print(self.view.sel()[0].b)
+				self.view.sel().clear()
+				self.view.sel().add(sublime.Region(end_cursor - len(text) + cursor))
+			if cursor < 0:
+				self.view.sel().clear()
+				self.view.sel().add(sublime.Region(end_cursor + cursor))
 
 	def process_request(self, text):
 
@@ -72,7 +85,7 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 			return result
 
 		elif re.match(r'^f$', text):
-			return '.format()'
+			return '.format()', -1
 
 		elif re.match(r'^b$', text):
 			return '<b>{}</b>'
@@ -86,7 +99,8 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 				return
 
 			result = '{0}{2} = hlp.{1}(r\'([^"]+)\', page)\n{0}if not {2}:\n{0}\tself.log("не смогли достать {2}", "!")\n{0}\treturn False\n{0}else:\n{0}\tself.log("достали {2}: %s" % {2}, "+")'.format(*list(res.groups()))
-			return result
+			cursor = result.find("r'([^\"]+)") + 2
+			return result, cursor
 
 		elif re.match(r'^\s*l\s.+?\s*(?:\+|\*|\-|~|!|)', text):
 			res = re.search(r'^(\s*)l\s(.+?)\s*(\+|\*|\-|~|!*)$', text)
