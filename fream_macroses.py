@@ -150,3 +150,18 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 				return
 			result = "self.data['" + res.group(1) + "']"
 			return result
+
+		elif re.match(r'^\s*ac$', text):
+			res = re.search(r'^(\s*)ac', text)
+			return res.group(1) + "actext = self.ac.captcha(captcha_url)\n" + res.group(1) + "if self.ac.error:\n" + res.group(1) + "\tself.log('ошибка разгадки: {}'.format(self.ac.last_error), '!')\n" + res.group(1) + "\treturn False\n" + res.group(1) + "else:\n" + res.group(1) + "\tself.log('разгадали: ' + actext, '+')  # self.ac.recaptcha_challenge # self.ac.bad()"
+
+		elif re.match(r'^\s*pdf\s', text):
+			res = re.search(r'^(\s*)pdf\s+([\s\S]+)', text)
+			content = res.group(2)
+
+			items = re.findall(r'form\-data;\s+name="([^"]+)"\s+(.*)', content)
+			result = res.group(1) + "data = {\n"
+			for item in items:
+				result += res.group(1) + "\t'{}': '{}',\n".format(*item)
+			result += res.group(1) + '}\n'
+			return result
