@@ -159,9 +159,12 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 			res = re.search(r'^(\s*)pdf\s+([\s\S]+)', text)
 			content = res.group(2)
 
-			items = re.findall(r'form\-data;\s+name="([^"]+)"\s+(.*)', content)
+			items = re.findall(r'form\-data;\s+name="([^"]+)"\n\n(.*)', content)
 			result = res.group(1) + "data = {\n"
 			for item in items:
 				result += res.group(1) + "\t'{}': '{}',\n".format(*item)
+			items = re.findall(r'form\-data;\s+name="([^"]+)"\s*;\s*filename="', content)
+			for item in items:
+				result += res.group(1) + "\t'%s': '@{}',\n" % item
 			result += res.group(1) + '}\n'
 			return result
