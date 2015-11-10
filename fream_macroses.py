@@ -109,7 +109,7 @@ class Fream_macrosesCommand(sublime_plugin.TextCommand):
 
 			args = [
 				res.group(1),
-				"'" if ' ' in res.group(2) else "",
+				"'" if re.sub(r'[a-z0-9_ ]+', '', res.group(2)) else "",
 				res.group(2),
 				'' if not res.group(3) else ", '{}'".format(res.group(3))
 			]
